@@ -29,6 +29,7 @@ namespace ScaryScarecrow
         public int Scarecrow = 0;
         public int StaffTimer = 9;
         public int CurrentStaffTimer;
+        public int NoTheresNoGotYouBack;
 
         public ScaryScarecrow(Main game) : base(game) { }
 
@@ -100,12 +101,12 @@ namespace ScaryScarecrow
             if (GameOngoing)
             {
                 GameOngoing = false;
-                TSPlayer.All.SendMessage("The Scarecrow Curse has been contained!", Color.Yellow);
+                TSPlayer.All.SendMessage("The Scarecrow Curse's has been contained!", Color.Yellow);
             }
             else
             {
                 GameOngoing = true;
-                TSPlayer.All.SendMessage("The Scarecrow Curse has been unleashed!", Color.Yellow);
+                TSPlayer.All.SendMessage("The Scarecrow Curse's has been unleashed!", Color.Yellow);
                 Scarecrow = Main.rand.Next(0, TShock.Utils.GetActivePlayerCount());
             }
         }
@@ -149,8 +150,24 @@ namespace ScaryScarecrow
                         }
                         else
                         {
-
+                            if (plr.Hitbox.Intersects(Main.player[Scarecrow].Hitbox) && NoTheresNoGotYouBack <= 0)
+                            {
+                                Main.player[Scarecrow].inventory[4].netDefaults(0);
+                                Main.player[Scarecrow].armor[0].netDefaults(0);
+                                Main.player[Scarecrow].armor[1].netDefaults(0);
+                                Main.player[Scarecrow].armor[2].netDefaults(0);
+                                Main.player[Scarecrow].armor[3].netDefaults(0);
+                                NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 4);
+                                NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 0 + 59);
+                                NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 1 + 59);
+                                NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 2 + 59);
+                                NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 3 + 59);
+                                Scarecrow = i;
+                                CurrentRavenTimer += 60;
+                                NoTheresNoGotYouBack = 90;
+                            }
                         }
+                        NoTheresNoGotYouBack--;
                     }
                 }
             }
