@@ -26,9 +26,9 @@ namespace ScaryScarecrow
         public int CurrentBreakTime;
         public int RavenTimer = 45;
         public int CurrentRavenTimer;
-        public int Scarecrow = 0;
-        public int StaffTimer = 9;
+        public int StaffTimer = 10;
         public int CurrentStaffTimer;
+        public int Scarecrow = 0;
         public int NoTheresNoGotYouBack;
 
         public ScaryScarecrow(Main game) : base(game) { }
@@ -108,11 +108,12 @@ namespace ScaryScarecrow
                 GameOngoing = true;
                 TSPlayer.All.SendMessage("The Scarecrow Curse's has been unleashed!", Color.Yellow);
                 Scarecrow = Main.rand.Next(0, TShock.Utils.GetActivePlayerCount());
+                CurrentRavenTimer = RavenTimer * 60;
             }
         }
         private void OnUpdate(EventArgs args)
         {
-            if (GameOngoing)
+            if (GameOngoing && CurrentBreakTime <= 0)
             {
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {
@@ -134,6 +135,8 @@ namespace ScaryScarecrow
                                 plr.inventory[4].netDefaults(0);
                                 NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[i].Index, 4);
                                 CurrentStaffTimer = StaffTimer * 60;
+                                TShock.Players[i].SetBuff(3, 240, false);
+                                Projectile.NewProjectile(Main.player[i].position, new Vector2(0, 0), 274, 0, 0);
                             }
                             else
                             {
@@ -167,8 +170,60 @@ namespace ScaryScarecrow
                                 NoTheresNoGotYouBack = 90;
                             }
                         }
-                        NoTheresNoGotYouBack--;
+                        if (NoTheresNoGotYouBack != 0)
+                            NoTheresNoGotYouBack--;
+                        if (CurrentRavenTimer != 0)
+                            CurrentRavenTimer--;
+                        switch (CurrentRavenTimer)
+                        {
+                            case (600):
+                                TSPlayer.All.SendMessage("10", Color.Yellow);
+                                break;
+                            case (540):
+                                TSPlayer.All.SendMessage("9", Color.Yellow);
+                                break;
+                            case (480):
+                                TSPlayer.All.SendMessage("8", Color.Yellow);
+                                break;
+                            case (420):
+                                TSPlayer.All.SendMessage("7", Color.Yellow);
+                                break;
+                            case (360):
+                                TSPlayer.All.SendMessage("6", Color.Yellow);
+                                break;
+                            case (300):
+                                TSPlayer.All.SendMessage("5", Color.Yellow);
+                                break;
+                            case (240):
+                                TSPlayer.All.SendMessage("4", Color.Yellow);
+                                break;
+                            case (180):
+                                TSPlayer.All.SendMessage("3", Color.Yellow);
+                                break;
+                            case (120):
+                                TSPlayer.All.SendMessage("2", Color.Yellow);
+                                break;
+                            case (60):
+                                TSPlayer.All.SendMessage("1", Color.Yellow);
+                                break;
+                            case (1):
+                                TSPlayer.All.SendMessage("Caw!", Color.Yellow);
+                                CurrentBreakTime = BreakTime * 60;
+                                break;
+                        }
                     }
+                }
+            }
+            else if (GameOngoing)
+            {
+                if (CurrentBreakTime > 0)
+                {
+                    TSPlayer.All.SendMessage(CurrentBreakTime.ToString(), Color.Yellow);
+                    CurrentBreakTime--;
+                }
+                if (CurrentBreakTime <= 1)
+                {
+                    Scarecrow = Main.rand.Next(0, TShock.Utils.GetActivePlayerCount());
                 }
             }
         }
