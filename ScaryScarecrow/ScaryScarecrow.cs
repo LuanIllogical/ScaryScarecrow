@@ -165,6 +165,7 @@ namespace ScaryScarecrow
                                 NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 1 + 59);
                                 NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 2 + 59);
                                 NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 3 + 59);
+                                TSPlayer.All.SendMessage(Main.player[Scarecrow].name + " -> " + plr.name, Color.Yellow);
                                 Scarecrow = i;
                                 CurrentRavenTimer += 60;
                                 NoTheresNoGotYouBack = 90;
@@ -218,7 +219,6 @@ namespace ScaryScarecrow
             {
                 if (CurrentBreakTime > 0)
                 {
-                    TSPlayer.All.SendMessage(CurrentBreakTime.ToString(), Color.Yellow);
                     CurrentBreakTime--;
                 }
                 if (CurrentBreakTime <= 1)
