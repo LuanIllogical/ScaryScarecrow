@@ -21,7 +21,6 @@ namespace ScaryScarecrow
         public static List<Player> Players = new List<Player>();
 
         public bool GameOngoing;
-        public bool InventoryBegone;
         public int BreakTime = 20;
         public int CurrentBreakTime;
         public int RavenTimer = 45;
@@ -209,6 +208,7 @@ namespace ScaryScarecrow
                                 break;
                             case (1):
                                 TSPlayer.All.SendMessage("Caw!", Color.Yellow);
+                                TShock.Players[Scarecrow].KillPlayer();
                                 CurrentBreakTime = BreakTime * 60;
                                 break;
                         }
@@ -221,7 +221,7 @@ namespace ScaryScarecrow
                 {
                     CurrentBreakTime--;
                 }
-                if (CurrentBreakTime <= 1)
+                if (CurrentBreakTime == 1)
                 {
                     Scarecrow = Main.rand.Next(0, TShock.Utils.GetActivePlayerCount());
                 }
