@@ -18,8 +18,6 @@ namespace ScaryScarecrow
         public override string Author => "ExitiumTheCat";
         public override string Description => "";
 
-        public static List<Player> Players = new List<Player>();
-
         public bool GameOngoing;
         public int BreakTime = 20;
         public int CurrentBreakTime;
@@ -221,9 +219,15 @@ namespace ScaryScarecrow
                 {
                     CurrentBreakTime--;
                 }
+                if (CurrentBreakTime == 300)
+                {
+                    TSPlayer.All.SendMessage("Game starting in 5 seconds!", Color.Yellow);
+                }
                 if (CurrentBreakTime == 1)
                 {
                     Scarecrow = Main.rand.Next(0, TShock.Utils.GetActivePlayerCount());
+                    CurrentRavenTimer = RavenTimer * 60;
+                    CurrentStaffTimer = StaffTimer * 60;
                 }
             }
         }
