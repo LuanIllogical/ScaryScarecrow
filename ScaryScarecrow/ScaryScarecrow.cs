@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Terraria;
 using TerrariaApi.Server;
 using TShockAPI;
@@ -55,6 +54,7 @@ namespace ScaryScarecrow
                 {
                     int.TryParse(input, out BreakTime);
                     if (BreakTime == 0) BreakTime = 20;
+                    args.Player.SendSuccessMessage("Break Time is now " + BreakTime + " seconds");
                 }
             }
             else
@@ -70,6 +70,7 @@ namespace ScaryScarecrow
                 {
                     int.TryParse(input, out RavenTimer);
                     if (RavenTimer == 0) RavenTimer = 20;
+                    args.Player.SendSuccessMessage("Raven Timer is now " + RavenTimer + " seconds");
                 }
             }
             else
@@ -85,6 +86,7 @@ namespace ScaryScarecrow
                 {
                     int.TryParse(input, out StaffTimer);
                     if (StaffTimer == 0) StaffTimer = 20;
+                    args.Player.SendSuccessMessage("Staff Timer is now " + StaffTimer + " seconds");
                 }
             }
             else
@@ -119,10 +121,12 @@ namespace ScaryScarecrow
                     {
                         if (i == Scarecrow)
                         {
+                            plr.inventory[58].netDefaults(0);
                             plr.armor[0].netDefaults(1788);
                             plr.armor[1].netDefaults(1789);
                             plr.armor[2].netDefaults(1790);
                             plr.armor[3].netDefaults(285);
+                            NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[i].Index, 58);
                             NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[i].Index, 0 + 59);
                             NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[i].Index, 1 + 59);
                             NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[i].Index, 2 + 59);
@@ -166,6 +170,7 @@ namespace ScaryScarecrow
                                 Scarecrow = i;
                                 CurrentRavenTimer += 60;
                                 NoTheresNoGotYouBack = 90;
+                                CurrentStaffTimer = 0;
                             }
                         }
                         if (NoTheresNoGotYouBack != 0)
@@ -218,6 +223,19 @@ namespace ScaryScarecrow
                 if (CurrentBreakTime > 0)
                 {
                     CurrentBreakTime--;
+                    if (Main.player[Scarecrow].armor[0].type != 0)
+                    {
+                        Main.player[Scarecrow].inventory[4].netDefaults(0);
+                        Main.player[Scarecrow].armor[0].netDefaults(0);
+                        Main.player[Scarecrow].armor[1].netDefaults(0);
+                        Main.player[Scarecrow].armor[2].netDefaults(0);
+                        Main.player[Scarecrow].armor[3].netDefaults(0);
+                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 4);
+                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 0 + 59);
+                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 1 + 59);
+                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 2 + 59);
+                        NetMessage.SendData((int)PacketTypes.PlayerSlot, -1, -1, NetworkText.Empty, TShock.Players[Scarecrow].Index, 3 + 59);
+                    }
                 }
                 if (CurrentBreakTime == 300)
                 {
@@ -226,6 +244,7 @@ namespace ScaryScarecrow
                 if (CurrentBreakTime == 1)
                 {
                     Scarecrow = Main.rand.Next(0, TShock.Utils.GetActivePlayerCount());
+                    TSPlayer.All.SendMessage("The Curse is on " + TShock.Players[Scarecrow].Name + "!", Color.Yellow);
                     CurrentRavenTimer = RavenTimer * 60;
                     CurrentStaffTimer = StaffTimer * 60;
                 }
